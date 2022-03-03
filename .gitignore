@@ -1,0 +1,5 @@
+*.o
+*.swp
+.ccls-cache
+reverse
+result
