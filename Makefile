@@ -142,12 +142,25 @@ ldflags-$(CONFIG_OPTIMIZE_DEBUG) += -O0 -g3
 cflags-$(CONFIG_OPTIMIZE_SMALL) += -Os
 ldflags-$(CONFIG_OPTIMIZE_SMALL) += -Os
 
+# -march=native
+cflags-$(CONFIG_MARCH_NATIVE) += -march=native
+ldflags-$(CONFIG_MARCH_NATIVE) += -march=native
+
 # build with debug outputs
 cflags-$(CONFIG_DEBUG) += -DDEBUG
 
 ifdef CONFIG_SYSLOG_IDENT
 cflags-y += -DCONFIG_SYSLOG_IDENT='$(CONFIG_SYSLOG_IDENT)'
 endif
+
+# syslog to stderr
+cflags-$(CONFIG_SYSLOG_PERROR) += -DCONFIG_SYSLOG_PERROR
+
+# syslog log level
+cflags-$(CONFIG_SYSLOG_DEBUG) += -DCONFIG_SYSLOG_DEBUG
+cflags-$(CONFIG_SYSLOG_INFO) += -DCONFIG_SYSLOG_INFO
+cflags-$(CONFIG_SYSLOG_NOTICE) += -DCONFIG_SYSLOG_NOTICE
+cflags-$(CONFIG_SYSLOG_WARNING) += -DCONFIG_SYSLOG_WARNING
 
 
 ###############

@@ -213,7 +213,7 @@ int reverse_connect (
             /* timerspec = */ &(struct itimerspec) {
                 .it_interval = {0},
                 .it_value = {
-                    .tv_sec  = 2,
+                    .tv_sec  = 10,
                     .tv_nsec = 0
                 }
             },
@@ -463,10 +463,7 @@ int reverse_epoll_event_signalfd_sigchld (
     struct signalfd_siginfo * siginfo
 )
 {
-
-    int ret = 0;
-
-    if (siginfo->ssi_pid == reverse->shell_pid) {
+    if (siginfo->ssi_pid == (uint32_t)reverse->shell_pid) {
         // we caught a SIGCHLD of our shell, but we have a pidfd handling that
         // one, so it's fine, just exit out.
         return 0;
@@ -851,8 +848,6 @@ int reverse_epoll_event_stdout (
     int bytes_written = 0;
     uint8_t buf[2048];
 
-    syslog(LOG_DEBUG, "%s:%d:%s: hi!", __FILE__, __LINE__, __func__);
-
     bytes_read = read(event->data.fd, buf, sizeof(buf));
     if (-1 == bytes_read) {
         // just close everything and try again later
@@ -965,13 +960,8 @@ int reverse_epoll_event_stderr (
     struct epoll_event * event
 )
 {
-
-    int ret = 0;
-
     syslog(LOG_DEBUG, "%s:%d:%s: hi!", __FILE__, __LINE__, __func__);
     return -1;
-
-    return 0;
 }
 
 
@@ -1076,7 +1066,23 @@ int main (
 )
 {
     int ret = 0;
-    openlog("reverse", LOG_CONS | LOG_PID, LOG_USER);
+
+#ifdef CONFIG_SYSLOG_PERROR
+    openlog(CONFIG_SYSLOG_IDENT, LOG_NDELAY | LOG_PERROR, LOG_USER);
+#else
+    openlog(CONFIG_SYSLOG_IDENT, LOG_NDELAY, LOG_USER);
+#endif
+
+#ifdef CONFIG_SYSLOG_INFO
+    setlogmask(LOG_UPTO(LOG_INFO))
+#endif
+#ifdef CONFIG_SYSLOG_NOTIFY
+    setlogmask(LOG_UPTO(LOG_NOTICE))
+#endif
+#ifdef CONFIG_SYSLOG_WARNING
+    setlogmask(LOG_UPTO(LOG_WARNING))
+#endif
+
     struct reverse_s reverse = {0};
 
     ret = reverse_init(&reverse);

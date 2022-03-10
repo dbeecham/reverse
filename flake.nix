@@ -1,12 +1,13 @@
 {
 
   inputs = {
-    # updated 2021-12-01
+    # updated 2022-02-07
     nixpkgs = {
       type = "github";
       owner = "NixOS";
       repo = "nixpkgs";
-      rev = "c30bbcfae7a5cbe44ba4311e51d3ce24b5c84e1b";
+      rev = "a102368ac4c3944978fecd9d7295a96d64586db5";
+      narHash = "sha256-hgdcyLo2d8N2BmHuPMWhsXlorv1ZDkhBjq1gMYvFbdo=";
     };
   };
 
@@ -17,6 +18,9 @@
       name = "reverse";
       src = self;
       installFlags = [ "DESTDIR=$(out)" "PREFIX=/" ];
+      depsBuildBuild = [
+        nixpkgs.legacyPackages.x86_64-linux.kconfig-frontends
+      ];
     };
 
   };

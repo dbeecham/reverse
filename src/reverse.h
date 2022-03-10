@@ -18,6 +18,10 @@
 #define CONFIG_WATCHDOG_TIMER_SECONDS 10
 #endif
 
+#ifndef CONFIG_SYSLOG_IDENT
+#define CONFIG_SYSLOG_IDENT "reverse"
+#endif
+
 struct reverse_s {
     int epollfd;
     int signalfd;
